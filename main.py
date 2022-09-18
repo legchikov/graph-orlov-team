@@ -1,5 +1,8 @@
 import networkx as nx
 import csv
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def calculate_neighbour(graph: nx.Graph) -> dict:
@@ -28,10 +31,27 @@ def create_graph() -> nx.Graph:
     return graph
 
 
+def draw_histogram_for_number_of_neighbour(neighbour):
+    df = pd.DataFrame.from_dict(neighbour, orient="index")  # create dataframe and paste neighbour
+    df = df.rename(columns={0: "number of neighbour"})
+    sns.displot(df, x="number of neighbour")
+    plt.savefig('ex1.pdf')
+
+
+def draw_histogram_for_features():
+    df = pd.read_csv('users_float_features.csv', index_col="user")
+    for i in df.columns:
+
+        sns.displot(df, x=i, kind="kde", fill=True)
+        plt.savefig(f'ex{i}.pdf')
+
+
 def main():
     graph = create_graph()
     neighbour = calculate_neighbour(graph)
-    print(neighbour)
+    print(neighbour.values())
+    #draw_histogram_for_number_of_neighbour(neighbour)
+    draw_histogram_for_features()
 
 
 if __name__ == "__main__":
